@@ -36,9 +36,16 @@ public class MinesweeperGame {
         }
 
         Minesweeper minesweeper = new Minesweeper(size, mines);
+
+        minesweeper.reveal(0, 0, false);
+
         while (!minesweeper.isGameOver()) {
             System.out.print("Pick a coordinate to check (x) (y) : ");
-            String aaa = s.nextLine();
+            int x = s.nextInt();
+            int y = s.nextInt();
+
+            minesweeper.reveal(x, y, false);
+            System.out.println(minesweeper);
         }
     }
 }
