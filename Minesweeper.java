@@ -5,6 +5,7 @@
  * Description: prg_02 - Minesweeper
  */
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Minesweeper {
@@ -23,11 +24,9 @@ public class Minesweeper {
         this.mines = mines;
 
 
-
         this.map = new boolean[this.size][this.size];
         this.board = new char[this.size][this.size];
 
-        System.out.println(getMines());
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -44,11 +43,14 @@ public class Minesweeper {
                 this.board[k][l] = '?';
             }
         }
-        for (int k = 0; k < size; k++) {
-            for (int l = 0; l < size; l++) {
-                reveal(k, l, false);
-            }
-        }
+//        for (int k = 0; k < size; k++) {
+//            for (int l = 0; l < size; l++) {
+//                reveal(k, l, false);
+//            }
+//            System.out.println();
+//        }
+
+        System.out.println(toString());
     }
 
     // displays the board
@@ -119,7 +121,7 @@ public class Minesweeper {
     public boolean isMineDetonated() {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
-                if (isMined(i, j)) return true;
+                if (isMined(i, j)) return false;
             }
         }
         return false;
@@ -132,7 +134,8 @@ public class Minesweeper {
         for (int i = 0; i < board.length ; i++) {
             qCounter = i;
         }
-        if (qCounter == mines) return true;
+        if (qCounter == mines) return false;
+
 
         return isMineDetonated();
     }
@@ -146,15 +149,23 @@ public class Minesweeper {
     // you must use the char conventions detailed in the README file
     // if you are not implementing the flag feature (bonus points) just ignore parameter "flag"
     void reveal(int x, int y, boolean flag) {
-        for (int i = 0; i < x ; i++) {
-            for (int j = 0; j < y ; j++) {
-                if (isMined(i, j)) System.out.print('*');
-                else if (minesAround(i, j) == 0) System.out.print(' ');
-                else if (minesAround(i, j) > 0) System.out.print(minesAround(i, j));
-                else System.out.print('?');
-            }
 
-        }
+        if (isMined(x, y)) this.board[x][y] = '*';
+        else if (minesAround(x, y) == 0) this.board[x][y] = ' ';
+        else if (minesAround(x, y) > 0) this.board[x][y] = (char) minesAround(x, y);
+        else this.board[x][y] = '?';
+
+
+//        for (int i = 0; i < x ; i++) {
+//            for (int j = 0; j < y ; j++) {
+//                if (isMined(i, j)) System.out.print('*');
+//                else if (minesAround(i, j) == 0) System.out.print('?');
+//                else if (minesAround(i, j) > 0) System.out.print(minesAround(i, j));
+//                else System.out.print('?');
+//            }
+//            System.out.println();
+//
+//        }
 
     }
 }
