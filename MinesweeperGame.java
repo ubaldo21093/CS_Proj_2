@@ -17,8 +17,8 @@ public class MinesweeperGame {
     // TODO #6: finish the implementation of the game according to the instructions
     public static void main(String[] args) {
 
-        int mines = 0;
-        int size = 0;
+        int mines;
+        int size;
 
         Scanner s = new Scanner(System.in);
         System.out.println("Choose your difficulty: 1, 2, 3");
@@ -37,15 +37,14 @@ public class MinesweeperGame {
 
         Minesweeper minesweeper = new Minesweeper(size, mines);
 
-        minesweeper.reveal(0, 0, false);
-
         while (!minesweeper.isGameOver()) {
             System.out.print("Pick a coordinate to check (x) (y) : ");
             int x = s.nextInt();
             int y = s.nextInt();
 
-            minesweeper.reveal(x, y, false);
+            minesweeper.reveal(x, y);
             System.out.println(minesweeper);
         }
+
     }
 }
