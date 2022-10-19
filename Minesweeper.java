@@ -5,7 +5,7 @@
  * Description: prg_02 - Minesweeper
  */
 
-import java.util.Arrays;
+
 import java.util.Random;
 
 public class Minesweeper {
@@ -23,10 +23,8 @@ public class Minesweeper {
         this.size = size;
         this.mines = mines;
 
-
         this.map = new boolean[this.size][this.size];
         this.board = new char[this.size][this.size];
-
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -43,13 +41,6 @@ public class Minesweeper {
                 this.board[k][l] = '?';
             }
         }
-//        for (int k = 0; k < size; k++) {
-//            for (int l = 0; l < size; l++) {
-//                reveal(k, l, false);
-//            }
-//            System.out.println();
-//        }
-
         System.out.println(toString());
     }
 
@@ -76,9 +67,6 @@ public class Minesweeper {
         int y = rnd.nextInt(size);
         if (!map[x][y]) {
             map[x][y] = true;
-//            System.out.print(x + " ");
-//            System.out.println(y);
-//            System.out.println(isMined(x, y));
             return true;
         }
         return false;
@@ -117,26 +105,32 @@ public class Minesweeper {
         return mineCount;
     }
 
-    // TODO #3: this method should return true if there is at least one tile in the board that reveals a mine
+    // TODOd #3: this method should return true if there is at least one tile in the board that reveals a mine
     public boolean isMineDetonated() {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                if (isMined(i, j)) return false;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (isMined(i, j) && board[i][j] == '*') {
+                    System.out.println("KABOOM YOU LOST!");
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    // TODO #4: this method should return true if ALL non-mined tiles were revealed OR a mine was detonated; false otherwise
+    // TODOd #4: this method should return true if ALL non-mined tiles were revealed OR a mine was detonated; false otherwise
     // hint: check if the number of tiles marked with '?' matches the number of mines; also look for a "detonated" mine
     public boolean isGameOver() {
         int qCounter = 0;
-        for (int i = 0; i < board.length ; i++) {
-            qCounter = i;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++){
+                if(board[i][j] == '?') qCounter += 1;
+            }
         }
-        if (qCounter == mines) return false;
-
-
+        if (qCounter == getMines()) {
+            System.out.println("YOU WON!");
+            return true;
+        }
         return isMineDetonated();
     }
 
@@ -149,23 +143,19 @@ public class Minesweeper {
     // you must use the char conventions detailed in the README file
     // if you are not implementing the flag feature (bonus points) just ignore parameter "flag"
     void reveal(int x, int y, boolean flag) {
-
-        if (isMined(x, y)) this.board[x][y] = '*';
-        else if (minesAround(x, y) == 0) this.board[x][y] = ' ';
-        else if (minesAround(x, y) > 0) this.board[x][y] = (char) minesAround(x, y);
-        else this.board[x][y] = '?';
-
-
-//        for (int i = 0; i < x ; i++) {
-//            for (int j = 0; j < y ; j++) {
-//                if (isMined(i, j)) System.out.print('*');
-//                else if (minesAround(i, j) == 0) System.out.print('?');
-//                else if (minesAround(i, j) > 0) System.out.print(minesAround(i, j));
-//                else System.out.print('?');
-//            }
-//            System.out.println();
-//
-//        }
-
+        if(x < 0 || x > size || y < 0 || y > size) {
+            System.out.println("OUT OF BOUNDS! TRY AGAIN!");
+        }
+        else if (isMined(x, y)) this.board[x][y] = '*';
+        else if (minesAround(x, y) > 0) this.board[x][y] = (char)(minesAround(x, y) + '0');
+        else
+            for(int i = x - 1; i < x + 2; i++)
+                for(int j = y - 1;j < y + 2; j++)
+                    if ( (j >- 1) && (j < board[0].length) && ( i >- 1) && (i < board.length) && (board[i][j] != ' ')){
+                        if (!map[i][j]) {
+                            board[i][j] = ' ';
+                            reveal(i, j);
+                        }
+                    }
     }
 }
