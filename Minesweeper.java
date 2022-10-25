@@ -1,7 +1,7 @@
 /*
  * CS2050 - Computer Science II - Fall 2022
  * Instructor: Thyago Mota
- * Student(s) Name(s):
+ * Student(s) Name(s): Vincent Cordova, Ubaldo Bogarin
  * Description: prg_02 - Minesweeper
  */
 
@@ -17,7 +17,7 @@ public class Minesweeper {
     private static final int MIN_SIZE = 6;
     private static final int MIN_MINES = 1;
 
-    // TODO #1: finish the implementation of the constructor according to the instructions
+    // TODOd #1: finish the implementation of the constructor according to the instructions
     public Minesweeper(int size, int mines) {
 
         this.size = size;
@@ -41,20 +41,33 @@ public class Minesweeper {
                 this.board[k][l] = '?';
             }
         }
-        System.out.println(toString());
+        System.out.println(this);
     }
 
     // displays the board
     @Override
     public String toString() {
         String str = "x\\y\t";
-        for (int i = 0; i < this.size; i++)
-            str += i + "\t";
+        str +=  "   ";
+        for (int i = 0; i < this.size; i++) {
+            str = (i > 9) ? (str + i + "    ") : (str + i + "     ");
+        }
+        str += "\n";
+        str += "\t";
+        str += "+";
+        for (int i = 0; i < this.size;i++){
+            str += "-----+";
+        }
         str += "\n";
         for (int i = 0; i < this.size; i++) {
-            str += i + "\t";
+            str += i + "\t|  ";
             for (int j = 0; j < this.size; j++)
-                str += board[i][j] + "\t";
+                str += board[i][j] + "  |  ";
+            str += "\n";
+            str += "\t";
+            str += "+";
+        for (int k = 0; k < this.size; k++)
+                str += "-----+";
             str += "\n";
         }
         return str;
@@ -91,17 +104,14 @@ public class Minesweeper {
         return mines;
     }
 
-    // TODO #2: this method should return the number of mines (immediately) around the given location
+    // TODOd #2: this method should return the number of mines (immediately) around the given location
     private int minesAround(int x, int y) {
         int mineCount = 0;
-        if (isMined(x-1, y-1)) mineCount++;
-        if (isMined(x-1, y)) mineCount++;
-        if (isMined(x, y-1)) mineCount++;
-        if (isMined(x+1, y+1)) mineCount++;
-        if (isMined(x+1, y)) mineCount++;
-        if (isMined(x, y+1)) mineCount++;
-        if (isMined(x-1, y+1)) mineCount++;
-        if (isMined(x+1, y-1)) mineCount++;
+        for (int i = x-1; i <= x+1; i++) {
+            for (int j = y-1; j <= y+1; j++) {
+                if (isMined(i, j)) mineCount++;
+            }
+        }
         return mineCount;
     }
 
@@ -139,13 +149,15 @@ public class Minesweeper {
         reveal(x, y, false);
     }
 
-    // TODO #5: this method should reveal the board tile based on the given location;
+    // TODOd #5: this method should reveal the board tile based on the given location;
     // you must use the char conventions detailed in the README file
     // if you are not implementing the flag feature (bonus points) just ignore parameter "flag"
     void reveal(int x, int y, boolean flag) {
         if(x < 0 || x > size || y < 0 || y > size) {
             System.out.println("OUT OF BOUNDS! TRY AGAIN!");
         }
+        if (flag && !isFlagged(x, y) && this.board[x][y] != ' ' && this.board[x][y] != (char)(minesAround(x, y)) + '0') this.board[x][y] = '+';
+        else if (flag && isFlagged(x, y)) this.board[x][y] = '?';
         else if (isMined(x, y)) this.board[x][y] = '*';
         else if (minesAround(x, y) > 0) this.board[x][y] = (char)(minesAround(x, y) + '0');
         else
